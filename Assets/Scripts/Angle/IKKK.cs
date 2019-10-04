@@ -8,6 +8,8 @@ public class IKKK : MonoBehaviour {
 
 	[SerializeField]
 	private Transform anchor;
+	[SerializeField]
+	private Transform target;
 
 	private Vector3 mousePosition;
 
@@ -18,20 +20,19 @@ public class IKKK : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		mousePosition.z = 0;
+		//mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		//mousePosition.z = 0;
 
-		segments[segments.Length - 1].Follow(mousePosition, false);
+
+		//Setting the very end & the other segments to follow the target
+		segments[segments.Length - 1].Follow(target);
+
 		for (int i = segments.Length - 2; i >= 0 ; i--) {
-			segments[i].Follow(segments[i + 1].transform.position, true);
+			segments[i].Follow(segments[i + 1].transform);
 		}
-		/*
-		segments[0].Follow(segments[segments.Length - 3].transform.position, true);
-		segments[1].Follow(segments[segments.Length - 2].transform.position, true);
-		segments[2].Follow(segments[segments.Length - 1].transform.position, true);*/
 
+		//Setting them back to the anchor position
 		segments[0].transform.position = anchor.position;
-
 		for (int i = 1; i < segments.Length; i++) {
 			segments[i].transform.position = segments[i - 1].GetEnd();
 		}

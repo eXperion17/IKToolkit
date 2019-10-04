@@ -5,12 +5,21 @@ using UnityEngine;
 
 public class LookAt : MonoBehaviour {
 
+	[SerializeField]
 	private SpriteRenderer spriteRenderer;
+	[SerializeField]
+	private MeshRenderer meshRenderer;
+
 	private Vector3 direction;
+	[SerializeField]
+	private bool is3D;
 
 	// Use this for initialization
 	void Awake () {
-		spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
+		/*if (is3D)
+			meshRenderer = transform.GetChild(0).GetComponent<MeshRenderer>();
+		else
+			spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();*/
 	}
 	
 	// Update is called once per frame
@@ -18,23 +27,35 @@ public class LookAt : MonoBehaviour {
 		
 	}
 
-	public void Follow(Vector3 pos, bool extra) {
+	public void Follow(Transform obj) {
 		//Rotation;
-		Vector3 dir = pos - transform.position;
+		Vector3 dir = obj.position - transform.position;
+		/*
 		Quaternion angleAxis = Quaternion.AngleAxis(Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90, Vector3.forward);
 		transform.rotation = Quaternion.Slerp(transform.rotation, angleAxis, Time.deltaTime * 50);
-		float length;
-		if (!extra)
-			length = spriteRenderer.size.y;
-		else
-			length = spriteRenderer.size.y;
+		*/
+
+		//Might need some replacin
+		transform.LookAt(obj);
+		transform.Rotate(90, 0, 0);
+
+		float length = GetLength();
 
 		Vector3 lengthDir = dir.normalized * length;
 
-		transform.position = pos + (lengthDir * -1);
+		transform.position = obj.position + (lengthDir * -1);
 
 		direction = lengthDir;
 	}
+
+	private float GetLength() {
+		//return meshRenderer.bounds.size.y;
+		if (is3D)
+			return 3;
+		else
+			return spriteRenderer.size.y;
+	}
+	
 
 	public Vector3 GetEnd() {
 		return transform.position + direction;
