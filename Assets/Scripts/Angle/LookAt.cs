@@ -27,7 +27,7 @@ public class LookAt : MonoBehaviour {
 		
 	}
 
-	public void Follow(Transform obj) {
+	public void Follow(Transform obj, bool keepRotation = false) {
 		//Rotation;
 		Vector3 dir = obj.position - transform.position;
 		/*
@@ -36,22 +36,33 @@ public class LookAt : MonoBehaviour {
 		*/
 
 		//Might need some replacin
-		transform.LookAt(obj);
-		transform.Rotate(90, 0, 0);
+		if (!keepRotation) {
+			transform.LookAt(obj);
+			transform.Rotate(90, 0, 0);
+		}
 
-		float length = GetLength();
+		float length = GetLength(keepRotation);
 
 		Vector3 lengthDir = dir.normalized * length;
-
-		transform.position = obj.position + (lengthDir * -1);
+		if (!keepRotation)
+			transform.position = obj.position + (lengthDir * -1);
+		else {
+			transform.position = obj.position;
+			transform.rotation = obj.rotation;
+		}
+			
 
 		direction = lengthDir;
 	}
 
-	private float GetLength() {
+	private float GetLength(bool keepRotation = false) {
 		//return meshRenderer.bounds.size.y;
-		if (is3D)
-			return 3;
+		if (is3D) {
+			if (keepRotation)
+				return meshRenderer.bounds.size.y;
+			else
+				return 3;
+		}
 		else
 			return spriteRenderer.size.y;
 	}
