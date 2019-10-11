@@ -1,33 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class JointProperties {
-	public GameObject dummy;
-	public Transform transform;
-	public Vector3 length;
-	public Vector3 direction;
-
-	public JointProperties(GameObject dummy, Transform obj, Vector3 length) {
-		this.dummy = dummy;
-		this.transform = obj;
-		this.length = length;
-		direction = Vector3.zero;
-	}
-
-	public void ApplyLocation() {
-		transform.position = dummy.transform.position;
-		transform.rotation = dummy.transform.rotation;
-	}
-
-	public Vector3 GetEnd() {
-		throw new NotImplementedException();
-	}
-}
-
-public class TargetIK : MonoBehaviour {
+public class TargetIKTwo : MonoBehaviour {
 
 	[SerializeField]
 	private Transform baseJoint;
@@ -38,56 +13,60 @@ public class TargetIK : MonoBehaviour {
 	[SerializeField]
 	private Transform baseAnchor;
 
+	[SerializeField]
+	private GameObject testPrefab;
+
 	//Visible in inspector only for debugging
 	[SerializeField]
 	private List<JointProperties> joints;
 
-	public bool apply;
-
 	// Use this for initialization
-	void Start () {
+	void Start() {
 		joints = new List<JointProperties>();
 
 		CreateJoints();
 	}
 
-	void Update() {
-		//Follow
-		for (int i = 0; i < joints.Count; i++) {
-			JointProperties currJoint = joints[i];
-			if (i == 0) {
-				Follow(currJoint, target);
-			} else {
-				Follow(currJoint, joints[i - 1].transform);
-			}
-		}
-		
-		joints[1].dummy.transform.position = baseAnchor.transform.position;
+	// Update is called once per frame
+	void OnAnimatorIK () {
 
-		if (apply) {
-			joints.ForEach(x => x.ApplyLocation());
-		}
-
-		
-		/*
-		//Setting them back to the anchor position
-		joints[0].transform.position = baseAnchor.position;
+		Follow(joints[0], target, true);
 		for (int i = 1; i < joints.Count; i++) {
-			joints[i].transform.position = joints[i - 1].transform.position + joints[i-1].length;
-		}*/
+			Follow(joints[i], joints[i-1].dummy.transform);
+		}
+
+
+		joints[joints.Count - 1].dummy.transform.position = baseAnchor.position;
+
+		for (int i = joints.Count - 2; i >= 0; i--) {
+			joints[i].dummy.transform.position = joints[i + 1].dummy.transform.position + joints[i + 1].direction;
+			Debug.DrawLine(joints[i].dummy.transform.position, joints[i + 1].dummy.transform.position + joints[i + 1].direction, Color.red);
+		}
+
+		joints.ForEach(x => x.ApplyLocation());
 	}
 
 	private void CreateJoints() {
 		Transform currentJoint = endJoint;
 		Transform previousJoint = null;
 
-		baseAnchor = new GameObject("d").transform;
-		baseAnchor.position = baseJoint.position;
+
+		//if anchor is the same as the base joint
+		if (baseAnchor.Equals(baseJoint)) {
+			var newAnchor = Instantiate(testPrefab, baseAnchor.parent);
+			newAnchor.transform.position = baseAnchor.position;
+			newAnchor.transform.rotation = baseAnchor.rotation;
+			baseAnchor = newAnchor.transform;
+		}
+
 		int id = 0;
 		//Needs a backup incase transform assignment results in an endless loop
 		while (currentJoint != null) {
-			var dummy = new GameObject("Dummy Joint " + baseAnchor.name + " " + id++);
+			var dummy = Instantiate(testPrefab, baseAnchor);
 			dummy.transform.parent = baseAnchor;
+			dummy.name = "dummy " + id++;
+			if (id == 1)
+					dummy.GetComponent<MeshRenderer>().material.color = Color.red;
 
 			joints.Add(new JointProperties(dummy, currentJoint, GetJointLength(currentJoint, previousJoint)));
 
@@ -97,19 +76,21 @@ public class TargetIK : MonoBehaviour {
 			if (previousJoint == baseJoint)
 				currentJoint = null;
 		}
+
 		
+
 	}
 
 	private Vector3 GetJointLength(Transform joint, Transform prev) {
 		if (joint == endJoint)
-			return Vector3.one * 0.001f;
+			return Vector3.one * 0.02f;
 
 		return prev.position - joint.position;
 	}
 
 	public void Follow(JointProperties joint, Transform obj, bool keepRotation = false) {
 		//Rotation;
-		Vector3 dir = obj.position - joint.transform.position;
+		Vector3 dir = obj.position - joint.dummy.transform.position;
 
 		if (!keepRotation) {
 			joint.dummy.transform.LookAt(obj);
@@ -125,6 +106,8 @@ public class TargetIK : MonoBehaviour {
 			joint.dummy.transform.position = obj.position;
 			joint.dummy.transform.rotation = obj.rotation;
 		}
+
+		joint.direction = lengthDir;
 
 		//joint.transform.position = joint.dummy.transform.position;
 		//joint.transform.rotation = joint.dummy.transform.rotation;
