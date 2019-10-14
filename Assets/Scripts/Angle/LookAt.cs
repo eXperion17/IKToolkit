@@ -14,6 +14,11 @@ public class LookAt : MonoBehaviour {
 	[SerializeField]
 	private bool is3D;
 
+	[Header("Constraints")]
+	public Vector2 ZRotationLimits;
+	public Vector2 YRotationLimits;
+	public Vector2 XRotationLimits;
+
 	// Use this for initialization
 	void Awake () {
 		/*if (is3D)
@@ -27,7 +32,7 @@ public class LookAt : MonoBehaviour {
 		
 	}
 
-	public void Follow(Transform obj, bool keepRotation = false) {
+	public void Follow(Transform obj, bool keepRotation = false, bool repeat = false) {
 		//Rotation;
 		Vector3 dir = obj.position - transform.position;
 		/*
@@ -37,8 +42,42 @@ public class LookAt : MonoBehaviour {
 
 		//Might need some replacin
 		if (!keepRotation) {
-			transform.LookAt(obj);
-			transform.Rotate(90, 0, 0);
+			if (!repeat) {
+				transform.LookAt(obj);
+				transform.Rotate(90, 0, 0);
+			}
+
+			if (ZRotationLimits.x > 0 && !repeat) {
+				var currRotation = transform.rotation.eulerAngles;
+				if (transform.rotation.eulerAngles.z > ZRotationLimits.x) {
+					currRotation.z = ZRotationLimits.x;
+				} else if (transform.rotation.eulerAngles.z < ZRotationLimits.y) {
+					currRotation.z = ZRotationLimits.y;
+				}
+				//Y
+				if (transform.rotation.eulerAngles.y > YRotationLimits.x) {
+					currRotation.y = YRotationLimits.x;
+				}
+				else if (transform.rotation.eulerAngles.y < YRotationLimits.y) {
+					currRotation.y = YRotationLimits.y;
+				}
+				//Y
+				
+				if (transform.rotation.eulerAngles.x > XRotationLimits.x) {
+					currRotation.x = XRotationLimits.x;
+				}
+				else if (transform.rotation.eulerAngles.x < XRotationLimits.y) {
+					currRotation.x = XRotationLimits.y;
+				}
+
+
+				transform.rotation = Quaternion.Euler(currRotation);
+				repeat = true;
+				if (repeat) {
+					Follow(obj, keepRotation, true);
+					return;
+				}
+			}
 		}
 
 		float length = GetLength(keepRotation);
@@ -66,9 +105,10 @@ public class LookAt : MonoBehaviour {
 		else
 			return spriteRenderer.size.y;
 	}
-	
+
 
 	public Vector3 GetEnd() {
-		return transform.position + direction;
+		//return transform.position + direction;
+		return transform.position + transform.TransformDirection(Vector3.up) * GetLength();
 	}
 }

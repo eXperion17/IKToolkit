@@ -28,7 +28,7 @@ public class TargetIKTwo : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void OnAnimatorIK () {
+	void Update () {
 
 		Follow(joints[0], target, true);
 		for (int i = 1; i < joints.Count; i++) {

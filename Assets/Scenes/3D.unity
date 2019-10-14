@@ -366,6 +366,7 @@ GameObject:
   - component: {fileID: 626658239}
   - component: {fileID: 626658238}
   - component: {fileID: 626658237}
+  - component: {fileID: 626658241}
   m_Layer: 0
   m_Name: Segment (1)
   m_TagString: Untagged
@@ -387,6 +388,9 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   meshRenderer: {fileID: 1604146792}
   is3D: 1
+  ZRotationLimits: {x: 0, y: 0}
+  YRotationLimits: {x: 0, y: 0}
+  XRotationLimits: {x: 0, y: 0}
 --- !u!23 &626658238
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -435,7 +439,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 626658236}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -5.82, y: 2.47, z: 1.0783548}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -443,6 +447,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1818360609 &626658241
+RotationConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 626658236}
+  m_Enabled: 0
+  m_Weight: 1
+  m_RotationAtRest: {x: 0, y: 0, z: 0}
+  m_RotationOffset: {x: 0, y: 0, z: 0}
+  m_AffectRotationX: 1
+  m_AffectRotationY: 1
+  m_AffectRotationZ: 0
+  m_IsContraintActive: 1
+  m_IsLocked: 1
+  m_Sources:
+  - sourceTransform: {fileID: 686440864}
+    weight: 1
+--- !u!4 &686440864 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4078441555707704, guid: 720f60638fd09574fb0f354b212a32e2,
+    type: 2}
+  m_PrefabInternal: {fileID: 103357464}
 --- !u!1 &1195296868
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,6 +502,9 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   meshRenderer: {fileID: 1297517210}
   is3D: 1
+  ZRotationLimits: {x: 0, y: 0}
+  YRotationLimits: {x: 0, y: 0}
+  XRotationLimits: {x: 0, y: 0}
 --- !u!23 &1195296870
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -857,6 +887,9 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   meshRenderer: {fileID: 337495061}
   is3D: 1
+  ZRotationLimits: {x: 0, y: 0}
+  YRotationLimits: {x: 0, y: 0}
+  XRotationLimits: {x: 0, y: 0}
 --- !u!23 &2009326837
 MeshRenderer:
   m_ObjectHideFlags: 0
