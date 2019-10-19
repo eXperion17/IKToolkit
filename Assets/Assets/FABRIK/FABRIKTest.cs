@@ -11,9 +11,9 @@ public class FABRIKTest : FABRIK
         float speed = 100.0F;
         float step = Time.deltaTime * speed;
 
-        FABRIKChain right = GetEndChain("Cube (5)_end_effector");
+        FABRIKChain right = GetEndChain("Box004_end_effector");
         //FABRIKChain left = GetEndChain("left_end_effector");
-
+		
         right.Target = Vector3.MoveTowards(right.EndEffector.Position, sphere_right.position, step);
         //left.Target = Vector3.MoveTowards(left.EndEffector.Position, sphere_left.position, step);
     }

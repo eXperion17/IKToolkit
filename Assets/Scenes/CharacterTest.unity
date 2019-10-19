@@ -190,29 +190,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!1 &186748286 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100078, guid: 5b79a835679108d4eb5657be526c607b,
-    type: 3}
-  m_PrefabInternal: {fileID: 2029639201}
---- !u!1818360609 &186748288
-RotationConstraint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 186748286}
-  m_Enabled: 1
-  m_Weight: 1
-  m_RotationAtRest: {x: -5.7180204, y: -98.8834, z: 2.1739187}
-  m_RotationOffset: {x: 0, y: 0, z: 0}
-  m_AffectRotationX: 1
-  m_AffectRotationY: 0
-  m_AffectRotationZ: 1
-  m_IsContraintActive: 1
-  m_IsLocked: 1
-  m_Sources:
-  - sourceTransform: {fileID: 304189641}
-    weight: 1
 --- !u!4 &304189641 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400072, guid: 5b79a835679108d4eb5657be526c607b,

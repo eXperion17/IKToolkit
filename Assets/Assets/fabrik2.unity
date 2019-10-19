@@ -364,7 +364,7 @@ Prefab:
       objectReference: {fileID: 1881507068}
     - target: {fileID: 100000, guid: 764a3b81f820f054892041fe645f60c2, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 764a3b81f820f054892041fe645f60c2, type: 3}
@@ -534,7 +534,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &545253190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -967,6 +967,39 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &931744501 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100010, guid: 764a3b81f820f054892041fe645f60c2,
+    type: 3}
+  m_PrefabInternal: {fileID: 225191229}
+--- !u!114 &931744505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 931744501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 260d5a90636da5f4db796b213463cdd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weight: 1
+  upAxisConstraint: {x: 0, y: 1, z: 0}
+  forwardAxisConstraint: {x: -0.24999999, y: 0.0035122004, z: 4.6191764}
+  swingConstraint: NaN
+  twistConstraint: NaN
+--- !u!114 &931744506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 931744501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5e0868883dcec443ae479a3d4307206, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sphere_right: {fileID: 1481172804}
 --- !u!43 &974854471
 Mesh:
   m_ObjectHideFlags: 0
