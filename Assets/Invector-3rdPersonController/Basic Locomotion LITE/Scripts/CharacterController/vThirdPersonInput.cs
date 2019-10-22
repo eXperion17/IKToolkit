@@ -50,8 +50,8 @@ namespace Invector.CharacterController
             tpCamera = FindObjectOfType<vThirdPersonCamera>();
             if (tpCamera) tpCamera.SetMainTarget(this.transform);
 
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.visible = false;
+            //Cursor.lockState = CursorLockMode.Locked;
         }
 
         protected virtual void LateUpdate()

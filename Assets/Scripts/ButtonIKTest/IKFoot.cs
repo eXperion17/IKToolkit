@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class FootInfo {
 	public Transform feetOrigin;
+	[HideInInspector]
 	public Vector3 baseOffset;
 	public Vector3 rayOffset = Vector3.up;
 }
@@ -17,6 +18,9 @@ public class IKFoot : MonoBehaviour {
 	private FootInfo _rightFoot;
 	[SerializeField]
 	private FootInfo _leftFoot;
+
+	[SerializeField]
+	private AnimationClip[] applyIKList;
 
 	private FootInfo[] _feetInfo;
 
@@ -39,7 +43,24 @@ public class IKFoot : MonoBehaviour {
 		
 	}
 
+	public bool RequiresFootIK(AnimationClip clip) {
+		var contains = false;
+
+		foreach (var otherClip in applyIKList) {
+			if (otherClip.Equals(clip)) {
+				contains = true;
+			}
+		}
+
+		return contains;
+	}
+
 	private void OnAnimatorIK(int layerIndex) {
+
+		if (!RequiresFootIK(_animator.GetCurrentAnimatorClipInfo(0)[0].clip))
+			return;
+
+
 		RaycastHit hit;
 		for (int i = 0; i < _feetInfo.Length; i++) {
 			var currInfo = _feetInfo[i];
@@ -53,18 +74,46 @@ public class IKFoot : MonoBehaviour {
 					_animator.SetIKPosition(AvatarIKGoal.RightFoot, footPos);
 					_animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
 
+					//_animator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.LookRotation(currInfo.feetOrigin.forward, hit.normal));
+					//var test = Quaternion.
+					//_animator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.LookRotation(currInfo.feetOrigin.parent.forward, hit.normal));
+
+					//  For Sideways (not angled up and down)
+					//var newForward = Quaternion.AngleAxis(90, hit.normal) * transform.forward;
+					var left = Quaternion.AngleAxis(90, transform.up) * transform.forward;
+					var newForward = Quaternion.AngleAxis(90, left) * hit.normal;
+					Debug.DrawLine(hit.point, hit.point + newForward, Color.green);
+
+					//var newForward = Quaternion.AngleAxis(180, transform.forward) * hit.normal;
+
+					var combined = Quaternion.Slerp(	Quaternion.LookRotation(newForward, hit.normal),
+										Quaternion.LookRotation(transform.forward, hit.normal), 0.5f);
+
+					_animator.SetIKRotation(AvatarIKGoal.RightFoot, combined);
+					
+
+
+					_animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1);
+
 				} else {
 					_animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPos);
 					_animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
+
+
+					var left = Quaternion.AngleAxis(90, transform.up) * transform.forward;
+					var newForward = Quaternion.AngleAxis(90, left) * hit.normal;
+					Debug.DrawLine(hit.point, hit.point + newForward, Color.green);
+					var combined = Quaternion.Slerp(Quaternion.LookRotation(newForward, hit.normal),
+										Quaternion.LookRotation(transform.forward, hit.normal), 0.5f);
+
+					_animator.SetIKRotation(AvatarIKGoal.LeftFoot, combined);
+
+					//  For Sideways (not angled up and down)
+					//_animator.SetIKRotation(AvatarIKGoal.LeftFoot, Quaternion.LookRotation(transform.forward, hit.normal));
+					_animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1);
 				}
 			}
 		}
-		
-		//var leftRay = Physics.Raycast(_leftFoot.feetOrigin.position + _leftFoot.baseOffset, Vector3.down, out hit, 5f);
-		//var footPosL = _leftFoot.feetOrigin.position + hit.distance * Vector3.down;
-
-		//_animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPosL);
-		//_animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1); 
 
 	}
 }
