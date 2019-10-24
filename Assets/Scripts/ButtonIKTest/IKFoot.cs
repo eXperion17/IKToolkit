@@ -73,26 +73,19 @@ public class IKFoot : MonoBehaviour {
 					//Debug.DrawLine(hit.point, hit.point + hit.normal, Color.green);
 					_animator.SetIKPosition(AvatarIKGoal.RightFoot, footPos);
 					_animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
-
-					//_animator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.LookRotation(currInfo.feetOrigin.forward, hit.normal));
-					//var test = Quaternion.
-					//_animator.SetIKRotation(AvatarIKGoal.RightFoot, Quaternion.LookRotation(currInfo.feetOrigin.parent.forward, hit.normal));
-
-					//  For Sideways (not angled up and down)
-					//var newForward = Quaternion.AngleAxis(90, hit.normal) * transform.forward;
-					var left = Quaternion.AngleAxis(90, transform.up) * transform.forward;
-					var newForward = Quaternion.AngleAxis(90, left) * hit.normal;
-					Debug.DrawLine(hit.point, hit.point + newForward, Color.green);
-
-					//var newForward = Quaternion.AngleAxis(180, transform.forward) * hit.normal;
-
-					var combined = Quaternion.Slerp(	Quaternion.LookRotation(newForward, hit.normal),
-										Quaternion.LookRotation(transform.forward, hit.normal), 0.5f);
-
-					_animator.SetIKRotation(AvatarIKGoal.RightFoot, combined);
 					
+					//Getting our left vector of the avatar/character
+					var leftVector = Quaternion.AngleAxis(90, transform.up) * transform.forward;
+					//Rotating the hit.normal so that it always faces forwards of the avatar.
+					var newForward = Quaternion.AngleAxis(90, leftVector) * hit.normal;
+					Debug.DrawLine(hit.point, hit.point + newForward, Color.green);
+					
+					//Interpolates the newForward (tilted up/down) with a simple LookRotation with the forward (for tilted sideways).
+					//Both shine in their particular area, so ideally 0.5f would be replaced by variable that changes depending on the angle.
+					var interpolatedRotation =	Quaternion.Slerp(	Quaternion.LookRotation(newForward, hit.normal),
+												Quaternion.LookRotation(transform.forward, hit.normal), 0.5f);
 
-
+					_animator.SetIKRotation(AvatarIKGoal.RightFoot, interpolatedRotation);
 					_animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1);
 
 				} else {
