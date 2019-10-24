@@ -17,6 +17,7 @@ public class RaycastChecker : MonoBehaviour {
 	private Vector3[] directions;
 	private float currInterval;
 	public UnityEventRay OnRayHitEvent;
+	private bool isActive = true;
 
 	// Use this for initialization
 	void Start () {
@@ -40,9 +41,10 @@ public class RaycastChecker : MonoBehaviour {
 		OnRayHitEvent.AddListener(method);
 	}
 
-	/*public void TestyTest(RaycastHit hit) {
-		Debug.Log(hit.point);
-	}*/
+	public void Toggle(bool value) {
+		isActive = value;
+	}
+	
 	
 	// Update is called once per frame
 	void Update () {
@@ -54,10 +56,12 @@ public class RaycastChecker : MonoBehaviour {
 		Debug.DrawLine(transform.position, transform.position + (directions[4] * maxDistance), Color.yellow);
 		Debug.DrawLine(transform.position, transform.position + (directions[5] * maxDistance), Color.magenta);
 
-		currInterval += Time.deltaTime;
-		if (currInterval >= raycastInterval) {
-			CastRays();
-			currInterval = 0;
+		if (isActive) {
+			currInterval += Time.deltaTime;
+			if (currInterval >= raycastInterval) {
+				CastRays();
+				currInterval = 0;
+			}
 		}
 	}
 
