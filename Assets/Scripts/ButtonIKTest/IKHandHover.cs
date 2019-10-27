@@ -19,6 +19,8 @@ public class IKHandHover : MonoBehaviour {
 	private Transform anchorPoint;
 	[SerializeField]
 	private Transform leanPoint;
+	[SerializeField]
+	private Transform handTransform;
 	[SerializeField, Range(0, 2)]
 	private float maxReachRadius;
 	[SerializeField, Range(1, 5)]
@@ -72,12 +74,21 @@ public class IKHandHover : MonoBehaviour {
 		//we always need to define the IK goal
 		var delta = anchorPoint.position - prevPosition;
 		var invertedHit = currHit.normal.normalized;
-		Debug.Log(invertedHit);
+		bool oneAxis = (currHit.normal.magnitude == 1);
+		//Debug.Log("1" + invertedHit);
 		invertedHit = new Vector3(Mathf.Abs(invertedHit.x - 1), Mathf.Abs(invertedHit.y - 1), Mathf.Abs(invertedHit.z - 1));
-		delta.Scale(invertedHit);
+		if (oneAxis) {
+			delta.Scale(invertedHit);
+			currHit.point += delta;
+		} else {
+			/*RaycastHit hitTwo;
+			if (Physics.Raycast(handTransform.position, transform.forward, out hitTwo, 2f)) {
+				currHit.point = hitTwo.point;
+			}*/
+		}
+		
 
-		currHit.point += delta;
-
+		//currHit.point += delta;
 
 		_animator.SetIKPosition(IKGoal, currHit.point);
 		_animator.SetIKHintPosition(IKHint, currHit.point + Vector3.down);

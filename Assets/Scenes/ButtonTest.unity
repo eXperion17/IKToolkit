@@ -527,11 +527,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4713734007204034, guid: d52c7b160b1e2554c9dceb4d08d946de, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1.711
       objectReference: {fileID: 0}
     - target: {fileID: 4713734007204034, guid: d52c7b160b1e2554c9dceb4d08d946de, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.422
       objectReference: {fileID: 0}
     - target: {fileID: 4713734007204034, guid: d52c7b160b1e2554c9dceb4d08d946de, type: 2}
       propertyPath: m_LocalPosition.z
@@ -543,7 +543,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4713734007204034, guid: d52c7b160b1e2554c9dceb4d08d946de, type: 2}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 4713734007204034, guid: d52c7b160b1e2554c9dceb4d08d946de, type: 2}
       propertyPath: m_LocalRotation.z
@@ -551,7 +551,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4713734007204034, guid: d52c7b160b1e2554c9dceb4d08d946de, type: 2}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 4713734007204034, guid: d52c7b160b1e2554c9dceb4d08d946de, type: 2}
       propertyPath: m_RootOrder
@@ -562,6 +562,10 @@ Prefab:
       propertyPath: target
       value: 
       objectReference: {fileID: 850145401}
+    - target: {fileID: 4713734007204034, guid: d52c7b160b1e2554c9dceb4d08d946de, type: 2}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d52c7b160b1e2554c9dceb4d08d946de, type: 2}
   m_IsPrefabAsset: 0
@@ -664,6 +668,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &693826954 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4911195165585714, guid: cba60b4a5ed06d8448c43d17c82f6eb2,
+    type: 2}
+  m_PrefabInternal: {fileID: 1476448783}
 --- !u!4 &850145401 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4332648222614418, guid: cba60b4a5ed06d8448c43d17c82f6eb2,
@@ -788,6 +797,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   raycastInterval: 0.1
   maxDistance: 0.4
+  directionHelper: {fileID: 850145401}
 --- !u!1001 &1476448783
 Prefab:
   m_ObjectHideFlags: 0
@@ -851,12 +861,12 @@ Prefab:
     - target: {fileID: 114783238817630022, guid: cba60b4a5ed06d8448c43d17c82f6eb2,
         type: 2}
       propertyPath: freeWalkSpeed
-      value: 1
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 114783238817630022, guid: cba60b4a5ed06d8448c43d17c82f6eb2,
         type: 2}
       propertyPath: strafeWalkSpeed
-      value: 1
+      value: 2.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cba60b4a5ed06d8448c43d17c82f6eb2, type: 2}
@@ -944,13 +954,18 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1548855025}
-  m_LocalRotation: {x: -0, y: -0.35576925, z: -0, w: 0.9345739}
+  m_LocalRotation: {x: 0, y: -0.38268343, z: 0, w: 0.92387956}
   m_LocalPosition: {x: -4.08, y: 1.34, z: -5.39}
   m_LocalScale: {x: 6.461252, y: 3, z: 20.393003}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: -41.681004, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -45, z: 0}
+--- !u!4 &1595773531 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4357032840437652, guid: cba60b4a5ed06d8448c43d17c82f6eb2,
+    type: 2}
+  m_PrefabInternal: {fileID: 1476448783}
 --- !u!1 &1607013175 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1722554818026798, guid: cba60b4a5ed06d8448c43d17c82f6eb2,
@@ -969,6 +984,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   raycastInterval: 0.1
   maxDistance: 0.4
+  directionHelper: {fileID: 850145401}
 --- !u!4 &2015591977 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4333256669606444, guid: cba60b4a5ed06d8448c43d17c82f6eb2,
@@ -1104,6 +1120,7 @@ MonoBehaviour:
   IKGoal: 3
   anchorPoint: {fileID: 850145401}
   leanPoint: {fileID: 2015591977}
+  handTransform: {fileID: 693826954}
   maxReachRadius: 0.5
   IKSpeed: 4
   handOffset: 0.05
@@ -1149,6 +1166,7 @@ MonoBehaviour:
   IKGoal: 2
   anchorPoint: {fileID: 850145401}
   leanPoint: {fileID: 1493429251}
+  handTransform: {fileID: 1595773531}
   maxReachRadius: 0.5
   IKSpeed: 4
   handOffset: 0.05

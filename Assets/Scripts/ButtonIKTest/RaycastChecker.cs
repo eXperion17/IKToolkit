@@ -13,6 +13,9 @@ public class RaycastChecker : MonoBehaviour {
 	private float raycastInterval = 1f;
 	[SerializeField]
 	private float maxDistance = 1f;
+
+	[SerializeField]
+	private Transform directionHelper;
 	
 	private Vector3[] directions;
 	private float currInterval;
@@ -49,12 +52,12 @@ public class RaycastChecker : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//Debug lines
-		Debug.DrawLine(transform.position, transform.position + (directions[0] * maxDistance), Color.red);
-		Debug.DrawLine(transform.position, transform.position + (directions[1] * maxDistance), Color.green);
-		Debug.DrawLine(transform.position, transform.position + (directions[2] * maxDistance), Color.blue);
-		Debug.DrawLine(transform.position, transform.position + (directions[3] * maxDistance), Color.cyan);
-		Debug.DrawLine(transform.position, transform.position + (directions[4] * maxDistance), Color.yellow);
-		Debug.DrawLine(transform.position, transform.position + (directions[5] * maxDistance), Color.magenta);
+		Debug.DrawLine(transform.position, transform.position + (transform.TransformDirection(directions[0]) * maxDistance), Color.red);
+		Debug.DrawLine(transform.position, transform.position + (transform.TransformDirection(directions[1]) * maxDistance), Color.green);
+		Debug.DrawLine(transform.position, transform.position + (transform.TransformDirection(directions[2]) * maxDistance), Color.blue);
+		Debug.DrawLine(transform.position, transform.position + (transform.TransformDirection(directions[3]) * maxDistance), Color.cyan);
+		Debug.DrawLine(transform.position, transform.position + (transform.TransformDirection(directions[4]) * maxDistance), Color.yellow);
+		Debug.DrawLine(transform.position, transform.position + (transform.TransformDirection(directions[5]) * maxDistance), Color.magenta);
 
 		if (isActive) {
 			currInterval += Time.deltaTime;
@@ -70,7 +73,13 @@ public class RaycastChecker : MonoBehaviour {
 			var currDir = directions[i];
 
 			RaycastHit hit;
-			if (Physics.Raycast(transform.position, currDir, out hit, maxDistance)) {
+			Vector3 dir;
+			if (directionHelper)
+				dir = directionHelper.TransformDirection(currDir);
+			else
+				dir = transform.TransformDirection(currDir);
+
+			if (Physics.Raycast(transform.position, dir, out hit, maxDistance)) {
 				if (hit.collider.tag == "Player")
 					return;
 
