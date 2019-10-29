@@ -55,6 +55,16 @@ public class IKHandHover : MonoBehaviour {
 	}
 
 	public void OnRayHit(RaycastHit hit) {
+		if (attached) {
+			if (hit.normal == currHit.normal && Vector3.Distance(hit.point, currHit.point) < 0.4f)
+				return;
+			else {
+				attached = false;
+				return;
+			}
+		}
+			
+
 		currHit = hit;
 		attached = true;
 		//Applying hand offset to prevent them from clipping
@@ -65,7 +75,8 @@ public class IKHandHover : MonoBehaviour {
 			placementOffset = -placementOffset;
 		currHit.point += placementOffset;
 
-		raycastCheckers[0].Toggle(false);
+		raycastCheckers[0].ToggleSlowed(true);
+		//raycastCheckers[0].AssignTarget(0, (currHit.point - anchorPoint.position).normalized);
 	}
 
 	private void OnAnimatorIK(int layerIndex) {
@@ -75,22 +86,34 @@ public class IKHandHover : MonoBehaviour {
 		var delta = anchorPoint.position - prevPosition;
 		var invertedHit = currHit.normal.normalized;
 		bool oneAxis = (currHit.normal.magnitude == 1);
-		//Debug.Log("1" + invertedHit);
-		invertedHit = new Vector3(Mathf.Abs(invertedHit.x - 1), Mathf.Abs(invertedHit.y - 1), Mathf.Abs(invertedHit.z - 1));
+
+		invertedHit = new Vector3(Mathf.Abs(Mathf.Abs(invertedHit.x) - 1), Mathf.Abs(Mathf.Abs(invertedHit.y) - 1), Mathf.Abs(Mathf.Abs(invertedHit.z) - 1));
+		//Debug.Log(invertedHit);
 		if (oneAxis) {
 			delta.Scale(invertedHit);
 			currHit.point += delta;
 		} else {
-			/*RaycastHit hitTwo;
-			if (Physics.Raycast(handTransform.position, transform.forward, out hitTwo, 2f)) {
-				currHit.point = hitTwo.point;
-			}*/
+			//raycastCheckers[0].ToggleSlowed(false);
+			RaycastHit hitTwo;
+			if (Physics.Raycast(leanPoint.position, transform.forward, out hitTwo, 1f)) {
+				currHit = hitTwo;
+			}
+
+			currHit.point += (currHit.normal.normalized * handOffset);
+
+			var placementOffset = (Quaternion.AngleAxis(90, transform.up) * -currHit.normal.normalized) * placementDistance;
+			if (IKGoal == AvatarIKGoal.LeftHand)
+				placementOffset = -placementOffset;
+			currHit.point += placementOffset;
 		}
+
+		//var projectt = Vector3.Project(leanPoint.forward, currHit.normal);
+		//Debug.Log(projectt);
 		
 
 		//currHit.point += delta;
 
-		_animator.SetIKPosition(IKGoal, currHit.point);
+		_animator.SetIKPosition(IKGoal, Vector3.Lerp(handTransform.position, currHit.point, 1));
 		_animator.SetIKHintPosition(IKHint, currHit.point + Vector3.down);
 		_animator.SetIKHintPositionWeight(IKHint, transitionCurve.Evaluate(transition));
 		_animator.SetIKPositionWeight(IKGoal, transitionCurve.Evaluate(transition));
@@ -109,7 +132,8 @@ public class IKHandHover : MonoBehaviour {
 
 			if (Vector3.Distance(leanPoint.position, currHit.point) > maxReachRadius) {
 				attached = false;
-				raycastCheckers[0].Toggle(true);
+				raycastCheckers[0].ToggleSlowed(false);
+				raycastCheckers[0].Reset();
 			}
 		} else {
 			if (transition > 0)

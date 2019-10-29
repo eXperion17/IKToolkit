@@ -57,7 +57,7 @@ public class IKFoot : MonoBehaviour {
 
 	private void OnAnimatorIK(int layerIndex) {
 
-		if (!RequiresFootIK(_animator.GetCurrentAnimatorClipInfo(0)[0].clip))
+		if ((_animator.GetCurrentAnimatorClipInfoCount(0) > 0) && !RequiresFootIK(_animator.GetCurrentAnimatorClipInfo(0)[0].clip))
 			return;
 
 
@@ -79,11 +79,13 @@ public class IKFoot : MonoBehaviour {
 					//Rotating the hit.normal so that it always faces forwards of the avatar.
 					var newForward = Quaternion.AngleAxis(90, leftVector) * hit.normal;
 					Debug.DrawLine(hit.point, hit.point + newForward, Color.green);
-					
+
 					//Interpolates the newForward (tilted up/down) with a simple LookRotation with the forward (for tilted sideways).
 					//Both shine in their particular area, so ideally 0.5f would be replaced by variable that changes depending on the angle.
-					var interpolatedRotation =	Quaternion.Slerp(	Quaternion.LookRotation(newForward, hit.normal),
-												Quaternion.LookRotation(transform.forward, hit.normal), 0.5f);
+					//var interpolatedRotation =	Quaternion.Slerp(	Quaternion.LookRotation(newForward, hit.normal),
+					//							Quaternion.LookRotation(transform.forward, hit.normal), 0.5f);
+
+					Quaternion interpolatedRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(transform.forward, hit.normal), hit.normal);
 
 					_animator.SetIKRotation(AvatarIKGoal.RightFoot, interpolatedRotation);
 					_animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1);
