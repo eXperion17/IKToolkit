@@ -2364,6 +2364,17 @@ MonoBehaviour:
   keyCode: 99
   scripts:
   - {fileID: 1649239807}
+--- !u!114 &1649239805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1649239803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1784666f7e23b64e8c1800b4f6579ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1649239807 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114081571517322496, guid: d37a0df78ee3e3340b11327ceeba5f78,
