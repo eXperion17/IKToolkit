@@ -41,6 +41,7 @@ public class IKHandHover : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 		raycastCheckers.ForEach(x => x.AddListener(OnRayHit));
+
 		currHit = new RaycastHit();
 		attached = false;
 
@@ -70,51 +71,52 @@ public class IKHandHover : MonoBehaviour {
 		//Applying hand offset to prevent them from clipping
 		currHit.point += (currHit.normal.normalized * handOffset);
 
+		//Some offset on placement of the hand, making them more spread out or closer to eachother for more natural leaning
 		var placementOffset = (Quaternion.AngleAxis(90, transform.up) * -currHit.normal.normalized) * placementDistance;
 		if (IKGoal == AvatarIKGoal.LeftHand)
 			placementOffset = -placementOffset;
+
 		currHit.point += placementOffset;
 
+		//Slow down the raycasts, we already made contact with a wall so we don't have to check as often
 		raycastCheckers[0].ToggleSlowed(true);
-		//raycastCheckers[0].AssignTarget(0, (currHit.point - anchorPoint.position).normalized);
 	}
 
 	private void OnAnimatorIK(int layerIndex) {
+		//RaycastHit can't be checked if it's null, so this is a different option of doing so
 		if (currHit.point.magnitude < 1) return;
-
-		//we always need to define the IK goal
+		
+		//To make the hands move with the character, we'll use the delta position of the character
 		var delta = anchorPoint.position - prevPosition;
 		var invertedHit = currHit.normal.normalized;
 		bool oneAxis = (currHit.normal.magnitude == 1);
-
+		//We take the hit.normal, turn it into a multiplier by subtracting 1 from the absolute value and multiply the delta with that value
+		//This works perfectly for non-angled walls, as it perfectly correlates with the axis
 		invertedHit = new Vector3(Mathf.Abs(Mathf.Abs(invertedHit.x) - 1), Mathf.Abs(Mathf.Abs(invertedHit.y) - 1), Mathf.Abs(Mathf.Abs(invertedHit.z) - 1));
-		//Debug.Log(invertedHit);
+		
 		if (oneAxis) {
 			delta.Scale(invertedHit);
 			currHit.point += delta;
 		} else {
-			//raycastCheckers[0].ToggleSlowed(false);
+			//This is a temporary solution, making extra raycasts if the walls are diagonal or curved
+			//Ideally this would happen without constant raycasts, but unfortunately I couldn't find a solution
 			RaycastHit hitTwo;
 			if (Physics.Raycast(leanPoint.position, transform.forward, out hitTwo, 1f)) {
 				currHit = hitTwo;
 			}
-
+			//This is basically a repeat of OnRayHit and declaring it as the currHit that the rest of the method uses
 			currHit.point += (currHit.normal.normalized * handOffset);
-
 			var placementOffset = (Quaternion.AngleAxis(90, transform.up) * -currHit.normal.normalized) * placementDistance;
 			if (IKGoal == AvatarIKGoal.LeftHand)
 				placementOffset = -placementOffset;
 			currHit.point += placementOffset;
 		}
 
-		//var projectt = Vector3.Project(leanPoint.forward, currHit.normal);
-		//Debug.Log(projectt);
-		
-
-		//currHit.point += delta;
-
+		//Using the animator and Unity's humanoid IK system to define the positions
 		_animator.SetIKPosition(IKGoal, Vector3.Lerp(handTransform.position, currHit.point, 1));
 		_animator.SetIKHintPosition(IKHint, currHit.point + Vector3.down);
+
+		//The AnimationCurve prevents jarring jumps, transition is added, subtracted and reset in below
 		_animator.SetIKHintPositionWeight(IKHint, transitionCurve.Evaluate(transition));
 		_animator.SetIKPositionWeight(IKGoal, transitionCurve.Evaluate(transition));
 
@@ -135,6 +137,7 @@ public class IKHandHover : MonoBehaviour {
 				raycastCheckers[0].ToggleSlowed(false);
 				raycastCheckers[0].Reset();
 			}
+			
 		} else {
 			if (transition > 0)
 				transition -= Time.deltaTime * IKSpeed;

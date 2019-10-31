@@ -2767,6 +2767,7 @@ MonoBehaviour:
   slowedInterval: 0.3
   maxDistance: 0.4
   directionHelper: {fileID: 4789727354065318}
+  textt: {fileID: 0}
 --- !u!114 &114952131157566278
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2782,6 +2783,7 @@ MonoBehaviour:
   slowedInterval: 0.25
   maxDistance: 0.4
   directionHelper: {fileID: 4789727354065318}
+  textt: {fileID: 0}
 --- !u!136 &136702680632235478
 CapsuleCollider:
   m_ObjectHideFlags: 1

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IKKK : MonoBehaviour {
+public class SegmentIK : MonoBehaviour {
 	[SerializeField]
 	private List<LookAt> segments;
 	[SerializeField]

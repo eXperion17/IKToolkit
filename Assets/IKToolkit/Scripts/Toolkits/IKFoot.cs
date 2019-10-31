@@ -34,13 +34,11 @@ public class IKFoot : MonoBehaviour {
 		for (int i = 0; i < _feetInfo.Length; i++) {
 			var currInfo = _feetInfo[i];
 			if (Physics.Raycast(currInfo.feetOrigin.position, Vector3.down, out hit, 5f)) {
+				//Before we do anything, we'll have to know the offset to the ground.
+				//This is used to determine how far off the feet have to be (since the pivot usually isn't on the ground)
 				currInfo.baseOffset = hit.point - currInfo.feetOrigin.position;
 			}
 		}
-	}
-
-	private void FixedUpdate() {
-		
 	}
 
 	public bool RequiresFootIK(AnimationClip clip) {
@@ -56,11 +54,11 @@ public class IKFoot : MonoBehaviour {
 	}
 
 	private void OnAnimatorIK(int layerIndex) {
-
+		//With an include-type list, we check if the most prominent clip is in the list, if so, apply the IK.
+		//Unfortunately this doesn't yet work with walking animations and such.
 		if ((_animator.GetCurrentAnimatorClipInfoCount(0) > 0) && !RequiresFootIK(_animator.GetCurrentAnimatorClipInfo(0)[0].clip))
 			return;
-
-
+		
 		RaycastHit hit;
 		for (int i = 0; i < _feetInfo.Length; i++) {
 			var currInfo = _feetInfo[i];
@@ -68,12 +66,12 @@ public class IKFoot : MonoBehaviour {
 			if (Physics.Raycast(currInfo.feetOrigin.position + currInfo.baseOffset + currInfo.rayOffset, Vector3.down, out hit, 5f)) {
 				footPos = currInfo.feetOrigin.position + hit.distance * Vector3.down + currInfo.rayOffset;
 
-				//hardcoded for now
+				//hardcoded for now as the IK systems only work with two feet anyway
 				if (i == 0) {
-					//Debug.DrawLine(hit.point, hit.point + hit.normal, Color.green);
 					_animator.SetIKPosition(AvatarIKGoal.RightFoot, footPos);
 					_animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
 					
+					/*
 					//Getting our left vector of the avatar/character
 					var leftVector = Quaternion.AngleAxis(90, transform.up) * transform.forward;
 					//Rotating the hit.normal so that it always faces forwards of the avatar.
@@ -84,7 +82,10 @@ public class IKFoot : MonoBehaviour {
 					//Both shine in their particular area, so ideally 0.5f would be replaced by variable that changes depending on the angle.
 					//var interpolatedRotation =	Quaternion.Slerp(	Quaternion.LookRotation(newForward, hit.normal),
 					//							Quaternion.LookRotation(transform.forward, hit.normal), 0.5f);
+					*/
 
+					//Upon some research, this line does exactly the same as the commented code above in just one method. Source: https://github.com/arkms/IKFoot_Floor-Unity
+					//In retrospect I could've done some more research before trying to tackle it on my own, however I have learned a decent amount doing it like this 
 					Quaternion interpolatedRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(transform.forward, hit.normal), hit.normal);
 
 					_animator.SetIKRotation(AvatarIKGoal.RightFoot, interpolatedRotation);
@@ -94,17 +95,9 @@ public class IKFoot : MonoBehaviour {
 					_animator.SetIKPosition(AvatarIKGoal.LeftFoot, footPos);
 					_animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
 
-
-					var left = Quaternion.AngleAxis(90, transform.up) * transform.forward;
-					var newForward = Quaternion.AngleAxis(90, left) * hit.normal;
-					Debug.DrawLine(hit.point, hit.point + newForward, Color.green);
-					var combined = Quaternion.Slerp(Quaternion.LookRotation(newForward, hit.normal),
-										Quaternion.LookRotation(transform.forward, hit.normal), 0.5f);
-
-					_animator.SetIKRotation(AvatarIKGoal.LeftFoot, combined);
-
-					//  For Sideways (not angled up and down)
-					//_animator.SetIKRotation(AvatarIKGoal.LeftFoot, Quaternion.LookRotation(transform.forward, hit.normal));
+					var interpolatedRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(transform.forward, hit.normal), hit.normal);
+					_animator.SetIKRotation(AvatarIKGoal.LeftFoot, interpolatedRotation);
+					
 					_animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1);
 				}
 			}
